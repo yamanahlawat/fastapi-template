@@ -11,7 +11,7 @@ from src.auth.services.auth import AuthService
 from src.database.dependencies import get_db_session
 
 # OAuth2 scheme for Swagger UI
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/token")
 
 INVALID_TOKEN_OR_EXPIRED = "Could not validate credentials"
 
