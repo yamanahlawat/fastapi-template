@@ -11,7 +11,6 @@ dependencies = [
   "httpx>=0.28.1",
   "loguru>=0.7.3",
   "psycopg[binary]>=3.3.3",
-  "pydantic-ai-slim[openai]>=1.78.0",
   "pydantic-settings>=2.13.1",
   "pyjwt>=2.12.1",
   "redis>=7.4.0",
@@ -19,4 +18,36 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["ipdb>=0.13.13", "logfire>=4.31.1", "pre-commit>=4.5.1", "ruff>=0.15.9"]
+dev = [
+  "ipdb>=0.13.13",
+  "pre-commit>=4.5.1",
+  "pytest>=9.1.1",
+  "pytest-asyncio>=1.4.0",
+  "pytest-cov>=7.1.0",
+  "pytest-env>=1.6.0",
+  "ruff>=0.15.9",
+  "tomli-w>=1.2.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = [
+  "tests",
+]
+python_files = [
+  "test_*.py",
+]
+python_classes = [
+  "Test*",
+]
+python_functions = [
+  "test_*",
+]
+
+[tool.pytest_env]
+env_files = [".env.test"]
+
+[tool.codespell]
+skip = ".git*,*.svg,*.lock"
+check-hidden = true
+ignore-words-list = "hel,selectin,dependant"
