@@ -12,6 +12,8 @@ A production-ready FastAPI template with JWT authentication, async PostgreSQL, R
 - **Alembic** -- async database migrations
 - **Docker Compose** -- app, PostgreSQL, and Redis
 - **Ruff** -- linting and formatting with pre-commit hooks
+- **Pytest** -- unit tests with mocked DB/Redis, coverage reporting
+- **CI** -- lint, spell-check, and test jobs on every push/PR via GitHub Actions
 
 ## Tech Stack
 
@@ -25,6 +27,7 @@ A production-ready FastAPI template with JWT authentication, async PostgreSQL, R
 | Auth | PyJWT + Argon2 |
 | Settings | Pydantic Settings |
 | Logging | Loguru |
+| Testing | Pytest + pytest-cov |
 | Package Manager | uv |
 | Python | 3.14+ |
 
@@ -86,17 +89,12 @@ src/
 
 4. Install dependencies:
    ```bash
-   uv sync
+   uv sync --group dev
    ```
 
 5. Run database migrations:
    ```bash
    alembic upgrade head
-   ```
-
-6. Start the dev server:
-   ```bash
-   fastapi dev src/main.py
    ```
 
 6. Start the dev server:
@@ -149,6 +147,27 @@ alembic upgrade head
 alembic downgrade -1
 ```
 
+## Testing
+
+Tests are unit tests only -- no real Postgres/Redis required, everything is mocked.
+
+```bash
+# Install test/lint tooling
+uv sync --group dev
+
+# Run the test suite
+uv run pytest
+
+# With coverage
+uv run pytest --cov --cov-report=term-missing
+```
+
+Test configuration lives in `.env.test` and is loaded automatically by the `pytest-env` plugin
+(see `[tool.pytest_env]` in `pyproject.toml`) -- no manual `.env` setup needed to run tests.
+
+See [`AGENTS.md`](./AGENTS.md) for the project's testing conventions (fixture placement, mocking
+style, naming) and layered architecture (`router` / `service` / `crud` / `schemas`).
+
 ## Linting
 
 ```bash
@@ -167,6 +186,12 @@ ruff format src/
 ```bash
 uvx ty check src/
 ```
+
+## Continuous Integration
+
+Every push and pull request to `main`/`development` runs three GitHub Actions jobs
+(`.github/workflows/ci.yml`): lint (`ruff check` + `ruff format --check`), spell-check
+(`codespell`), and test (`pytest --cov`, with the coverage report uploaded as a build artifact).
 
 ## License
 
